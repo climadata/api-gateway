@@ -44,7 +44,7 @@ export class HealthController {
     try {
       const { service } = req.params;
       
-      if (!service) {
+      if (!service || !service.trim()) {
         res.status(400).json({
           error: 'Service name is required',
         });
