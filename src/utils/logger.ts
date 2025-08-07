@@ -1,5 +1,7 @@
 import winston from 'winston';
 import { config } from '../config';
+import fs from 'fs';
+import path from 'path';
 
 const logFormat = winston.format.combine(
   winston.format.timestamp(),
@@ -28,7 +30,6 @@ export const logger = winston.createLogger({
 });
 
 // Create logs directory if it doesn't exist
-import fs from 'fs';
 const logsDir = path.join(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
