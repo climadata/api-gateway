@@ -65,7 +65,13 @@ export class ProxyService {
       }
 
       // Build target URL
-      const targetPath = req.originalUrl.replace(route.path, '');
+      let targetPath = req.originalUrl.replace(route.path, '');
+      
+      // Para o weather service, adiciona o prefixo /weather
+      if (route.service === 'weather') {
+        targetPath = `/weather${targetPath}`;
+      }
+      
       const targetUrl = `${serviceUrl}${targetPath}`;
 
       // Prepare axios config
