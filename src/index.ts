@@ -32,6 +32,7 @@ class ApiGateway {
     
 
     this.app.use(morgan('combined', {
+      skip: (req) => req.path === '/favicon.ico',
       stream: {
         write: (message: string) => logger.info(message.trim()),
       },
