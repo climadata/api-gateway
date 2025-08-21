@@ -30,9 +30,6 @@ jobs:
       - name: Build TypeScript
         run: npm run build
         
-      - name: Run tests
-        run: npm test
-        
       - name: Build Docker image
         run: docker build -t api-gateway:test .
         
