@@ -43,6 +43,9 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 # Copiar arquivos de configuração necessários
 COPY --chown=nodejs:nodejs env.example ./
 
+# Criar diretório de logs com permissões corretas
+RUN mkdir -p logs && chown -R nodejs:nodejs logs
+
 # Mudar para usuário não-root
 USER nodejs
 
