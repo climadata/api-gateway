@@ -41,11 +41,25 @@ jobs:
             -e PORT=3000 \
             api-gateway:test
           
-          # Wait for startup
-          sleep 10
+          # Wait for container to be healthy
+          echo "Waiting for container to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/health > /dev/null 2>&1; then
+              echo "Container is ready!"
+              break
+            fi
+            echo "Attempt $i/30: Container not ready yet, waiting..."
+            sleep 2
+          done
           
-          # Test health endpoint
-          curl -f http://localhost:3000/health || exit 1
+          # Final test
+          curl -f http://localhost:3000/health || {
+            echo "Health check failed. Container logs:"
+            docker logs test-container
+            exit 1
+          }
+          
+          echo "Health check passed!"
           
           # Cleanup
           docker stop test-container
