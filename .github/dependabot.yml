@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # Atualizações do npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "andrezavilar"
+    assignees:
+      - "andrezavilar"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    ignore:
+      # Ignorar atualizações major que podem quebrar
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        
+  # Atualizações do GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "andreza-vilar"
+    assignees:
+      - "andrezavilar"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"

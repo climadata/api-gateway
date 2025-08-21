@@ -10,7 +10,7 @@ export class GatewayController {
     this.proxyService = new ProxyService();
   }
 
-  public async proxyRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async proxyRequest(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
       const proxyRequest: ProxyRequest = {
         originalUrl: req.originalUrl,

@@ -1,0 +1,68 @@
+name: Build and Test - API Gateway
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Build and test
+        run: |
+          npm ci
+          npm run lint
+          npm run build
+          
+      - name: Build Docker image
+        run: docker build -t api-gateway:${{ github.ref_name }} .
+        
+      - name: Test Docker container
+        run: |
+          echo "Testing Docker image: api-gateway:${{ github.ref_name }}"
+          
+          # Start container
+          docker run -d --name test-container -p 3000:3000 \
+            -e NODE_ENV=test \
+            -e PORT=3000 \
+            -e LOG_LEVEL=error \
+            api-gateway:${{ github.ref_name }}
+          
+          # Wait for container to be healthy
+          echo "Waiting for container to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/health > /dev/null 2>&1; then
+              echo "Container is ready!"
+              break
+            fi
+            echo "Attempt $i/30: Container not ready yet, waiting..."
+            sleep 2
+          done
+          
+          # Final test
+          curl -f http://localhost:3000/health || {
+            echo "Health check failed. Container logs:"
+            docker logs test-container
+            exit 1
+          }
+          
+          echo "Health check passed!"
+          
+          # Cleanup
+          docker stop test-container
+          docker rm test-container
+          
+          echo "Docker image test completed successfully!"
