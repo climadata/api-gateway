@@ -8,7 +8,7 @@ export const config = {
   
   // microservices URLs
   services: {
-    weather: process.env.WEATHER_SERVICE_URL || 'http://localhost:3001',
+    weather: process.env.WEATHER_SERVICE_URL || 'http://weather-service:3001',
     auth: process.env.AUTH_SERVICE_URL || 'http://localhost:3002',
     cache: process.env.CACHE_SERVICE_URL || 'http://localhost:3003',
     alert: process.env.ALERT_SERVICE_URL || 'http://localhost:3004',
@@ -20,6 +20,6 @@ export const config = {
   },
   
   logLevel: process.env.LOG_LEVEL || 'info',
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3005',
+  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:8082',
   healthCheckInterval: parseInt(process.env.HEALTH_CHECK_INTERVAL || '30000'),
 };
