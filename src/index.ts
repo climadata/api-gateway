@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
@@ -29,27 +29,26 @@ class ApiGateway {
     this.app.use(compression());
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-    
 
-    this.app.use(morgan('combined', {
-      skip: (req) => req.path === '/favicon.ico',
-      stream: {
-        write: (message: string) => logger.info(message.trim()),
-      },
-    }));
-    
+    this.app.use(
+      morgan('combined', {
+        skip: (req: Request) => req.path === '/favicon.ico',
+        stream: {
+          write: (message: string) => logger.info(message.trim()),
+        },
+      }),
+    );
+
     this.app.use(requestLogger);
-    
     this.app.use(rateLimiter);
   }
 
   private setupRoutes(): void {
     this.app.use('/health', healthRoutes);
-    
     this.app.use('/api', gatewayRoutes);
-    
+
     // root endpoint
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (req: Request, res: Response): void => {
       res.json({
         message: 'API Gateway is running',
         version: '1.0.0',
@@ -94,7 +93,7 @@ class ApiGateway {
       });
     });
 
-    process.on('uncaughtException', (error) => {
+    process.on('uncaughtException', (error: Error) => {
       logger.error('Uncaught Exception', {
         error: error.message,
         stack: error.stack,
@@ -102,11 +101,8 @@ class ApiGateway {
       process.exit(1);
     });
 
-    process.on('unhandledRejection', (reason, promise) => {
-      logger.error('Unhandled Rejection', {
-        reason,
-        promise,
-      });
+    process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
+      logger.error('Unhandled Rejection', { reason, promise });
       process.exit(1);
     });
   }

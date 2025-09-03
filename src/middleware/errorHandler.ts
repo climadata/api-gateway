@@ -6,7 +6,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction 
 ): void => {
   logger.error('Unhandled error', {
     error: error.message,
@@ -29,7 +29,7 @@ export const errorHandler = (
 export const notFoundHandler = (
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   const errorResponse: ErrorResponse = {
     error: 'Not Found',
